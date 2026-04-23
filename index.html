@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FLOWFIT — Kişiselleştirilmiş Spor & Beslenme Yönetimi</title>
+  <meta name="description" content="FLOWFIT: AI destekli, kişiselleştirilmiş spor ve beslenme yönetim sistemi. Antrenman programları, besin analizi ve oyunlaştırma ile hedeflerinize ulaşın." />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<!-- Mobile Toggles -->
+<button class="mobile-toggle" id="mobileToggleLeft" aria-label="Menüyü aç">
+  <i data-lucide="menu"></i>
+</button>
+<button class="mobile-toggle-right" id="mobileToggleRight" aria-label="Oyunlaştırma paneli">
+  <i data-lucide="trophy"></i>
+</button>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<div id="app">
+
+  <!-- ===== LEFT SIDEBAR ===== -->
+  <aside class="sidebar-left" id="sidebarLeft">
+    <div class="logo">
+      <div class="logo-icon">F</div>
+      <span class="logo-text">FLOWFIT</span>
+    </div>
+
+    <nav>
+      <div class="nav-section">
+        <div class="nav-label">Ana Menü</div>
+        <div class="nav-item active" id="nav-dashboard">
+          <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span>
+          <span>Kontrol Paneli</span>
+        </div>
+        <div class="nav-item" id="nav-workouts">
+          <span class="nav-icon"><i data-lucide="dumbbell"></i></span>
+          <span>Antrenmanlar</span>
+        </div>
+        <div class="nav-item" id="nav-nutrition">
+          <span class="nav-icon"><i data-lucide="apple"></i></span>
+          <span>Beslenme</span>
+        </div>
+        <div class="nav-item" id="nav-progress">
+          <span class="nav-icon"><i data-lucide="trending-up"></i></span>
+          <span>İlerleme</span>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Araçlar</div>
+        <div class="nav-item" id="nav-calanalysis">
+          <span class="nav-icon"><i data-lucide="utensils"></i></span>
+          <span>Kalori Analizi</span>
+        </div>
+        <div class="nav-item" id="nav-calendar">
+          <span class="nav-icon"><i data-lucide="calendar"></i></span>
+          <span>Takvim</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-user" id="nav-profile" style="cursor: pointer;">
+      <img src="avatar.png" alt="Kullanıcı avatarı" id="user-avatar" />
+      <div class="user-info">
+        <div class="user-name">Yasemin C.</div>
+        <div class="user-plan">⚡ Pro Üyelik</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <h1>Merhaba, <span>Yasemin</span> 👋</h1>
+        <p>Bugün harika bir gün! Hedeflerine bir adım daha yaklaş.</p>
+      </div>
+      <div class="header-right">
+        <!-- Search and Notifications removed per user request -->
+      </div>
+    </header>
+
+    <!-- Stats Row -->
+    <section class="stats-row" id="stats-row">
+      <div class="stat-card animate-in">
+        <div class="stat-header">
+          <div class="stat-icon-wrap blue"><i data-lucide="flame"></i></div>
+          <span class="stat-trend up">↑ 12%</span>
+        </div>
+        <div class="stat-value" id="stat-calories">1,847</div>
+        <div class="stat-label">Yakılan Kalori</div>
+      </div>
+      <div class="stat-card animate-in">
+        <div class="stat-header">
+          <div class="stat-icon-wrap green"><i data-lucide="footprints"></i></div>
+          <span class="stat-trend up">↑ 8%</span>
+        </div>
+        <div class="stat-value" id="stat-steps">12,450</div>
+        <div class="stat-label">Adım</div>
+      </div>
+      <div class="stat-card animate-in">
+        <div class="stat-header">
+          <div class="stat-icon-wrap violet"><i data-lucide="heart-pulse"></i></div>
+          <span class="stat-trend down">↓ 3%</span>
+        </div>
+        <div class="stat-value" id="stat-heart">72</div>
+        <div class="stat-label">Ort. Nabız (bpm)</div>
+      </div>
+      <div class="stat-card animate-in">
+        <div class="stat-header">
+          <div class="stat-icon-wrap orange"><i data-lucide="droplets"></i></div>
+          <span class="stat-trend up">↑ 15%</span>
+        </div>
+        <div class="stat-value" id="stat-water">2.4L</div>
+        <div class="stat-label">Su Tüketimi</div>
+      </div>
+    </section>
+
+    <!-- Dashboard Grid -->
+    <section class="dashboard-grid">
+
+      <!-- ── GÜNLÜK PLAN ── -->
+      <div class="card" id="daily-plan-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">📋</span> Günlük Plan
+            <span class="card-badge">Bugün</span>
+          </div>
+          <span class="card-action" id="viewAllPlan">Tümünü Gör →</span>
+        </div>
+
+        <div class="daily-plan-tabs">
+          <span class="plan-tab active" data-tab="all">Tümü</span>
+          <span class="plan-tab" data-tab="workout">Antrenman</span>
+          <span class="plan-tab" data-tab="nutrition">Beslenme</span>
+        </div>
+
+        <div class="plan-timeline" id="plan-timeline">
+          <div class="plan-item workout completed">
+            <div class="plan-item-header">
+              <span class="plan-time">07:00</span>
+              <span class="plan-status done">✓ Tamamlandı</span>
+            </div>
+            <div class="plan-item-title">Sabah Koşusu</div>
+            <div class="plan-item-detail">5 km · 28 dakika · 320 kcal</div>
+          </div>
+          <div class="plan-item nutrition completed">
+            <div class="plan-item-header">
+              <span class="plan-time">08:30</span>
+              <span class="plan-status done">✓ Tamamlandı</span>
+            </div>
+            <div class="plan-item-title">Kahvaltı — Yüksek Proteinli</div>
+            <div class="plan-item-detail">Yumurta, avokado, tam buğday ekmek · 480 kcal</div>
+          </div>
+          <div class="plan-item workout active">
+            <div class="plan-item-header">
+              <span class="plan-time">12:00</span>
+              <span class="plan-status now">● Şimdi</span>
+            </div>
+            <div class="plan-item-title">Üst Vücut Kuvvet Antrenmanı</div>
+            <div class="plan-item-detail">Bench Press, Dumbbell Row, Shoulder Press · 45 dk</div>
+          </div>
+          <div class="plan-item nutrition">
+            <div class="plan-item-header">
+              <span class="plan-time">13:30</span>
+              <span class="plan-status upcoming">Gelecek</span>
+            </div>
+            <div class="plan-item-title">Öğle Yemeği — Dengeli</div>
+            <div class="plan-item-detail">Izgara tavuk, kinoa, yeşil salata · 620 kcal</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── GÜN SONU KÜMÜLATİF KALORİ ANALİZİ ── -->
+      <div class="card" id="calorie-analysis-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">🍎</span> Kalori Analizi
+          </div>
+          <div class="cal-header-actions">
+            <div class="card-badge" id="cal-countdown-badge">00:00:00 kaldı</div>
+            <button class="cal-reset-top-btn" id="cal-reset-top" title="Analizi Sıfırla">
+              <i data-lucide="rotate-ccw"></i> Sıfırla
+            </button>
+          </div>
+        </div>
+
+        <div class="cal-summary">
+          <div class="cal-donut-wrap">
+            <svg class="cal-donut-svg" viewBox="0 0 120 120">
+              <circle class="cal-donut-bg" cx="60" cy="60" r="50"></circle>
+              <circle class="cal-donut-fill" id="cal-donut-fill" cx="60" cy="60" r="50"></circle>
+            </svg>
+            <div class="cal-donut-inner">
+              <div class="cal-donut-total" id="cal-total-display">0</div>
+              <div class="cal-donut-label">kcal</div>
+            </div>
+          </div>
+          <div class="cal-stats-col">
+            <div class="cal-stat-item">
+              <span class="cal-stat-label">Hedef:</span>
+              <span class="cal-stat-val" id="cal-goal-display">2,200 kcal</span>
+            </div>
+            <div class="cal-stat-item">
+              <span class="cal-stat-label">Alınan:</span>
+              <span class="cal-stat-val consumed" id="cal-consumed-display">0 kcal</span>
+            </div>
+            <div class="cal-stat-item">
+              <span class="cal-stat-label">Kalan:</span>
+              <span class="cal-stat-val remaining" id="cal-remaining-display">2,200 kcal</span>
+            </div>
+            <div class="cal-macro-row">
+              <div class="cal-macro-chip protein" id="chip-protein">P: 0g</div>
+              <div class="cal-macro-chip carbs" id="chip-carbs">K: 0g</div>
+              <div class="cal-macro-chip fat" id="chip-fat">Y: 0g</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cal-add-form">
+          <div class="cal-form-row">
+            <div class="cal-input-wrap">
+              <select id="cal-food-select" class="cal-select">
+                <option value="" disabled selected>Öğün seç...</option>
+                <option value="450,30,45,12">Izgara Tavuk & Pilav — 450 kcal</option>
+                <option value="280,15,35,8">Ton Balıklı Salata — 280 kcal</option>
+                <option value="320,40,55,20">Yulaf Ezmesi & Meyve — 320 kcal</option>
+                <option value="180,25,2,8">Protein Shake — 180 kcal</option>
+                <option value="550,25,65,22">Spagetti Bolognese — 550 kcal</option>
+              </select>
+            </div>
+            <button class="cal-quick-btn" id="cal-add-quick">Ekle</button>
+          </div>
+          
+          <div class="cal-form-row manual-row">
+            <input type="text" id="cal-food-name" class="cal-input" placeholder="Öğün adı..." />
+            <input type="number" id="cal-food-kcal" class="cal-input small" placeholder="kcal" />
+            <div class="cal-input-wrap" style="display:flex;gap:4px;">
+               <input type="number" id="cal-food-protein" class="cal-input small" placeholder="P" title="Protein" />
+               <input type="number" id="cal-food-carbs" class="cal-input small" placeholder="K" title="Karbonhidrat" />
+               <input type="number" id="cal-food-fat" class="cal-input small" placeholder="Y" title="Yağ" />
+            </div>
+            <button class="cal-add-btn" id="cal-add-manual" title="Ekle">+</button>
+          </div>
+        </div>
+
+        <div class="cal-meal-list" id="cal-meal-list">
+          <div class="cal-empty-state" id="cal-empty-state">
+            <span>🍽️</span>
+            <p>Kümülatif analiz için öğün ekleyin.</p>
+          </div>
+        </div>
+
+        <div class="card-action" id="resetDayCalories" style="margin-top:16px; justify-content:center; color:var(--text-muted); font-size:0.75rem;">
+          <i data-lucide="refresh-cw" style="width:12px;"></i> Analizi Sıfırla
+        </div>
+      </div>
+
+      <!-- ── CANLI ANTRENMAN MODU ── -->
+      <div class="card" id="live-workout-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">🏋️</span> Canlı Antrenman Modu
+            <span class="card-badge" style="background:rgba(0,232,157,0.1);color:var(--neon-green);border-color:rgba(0,232,157,0.2);">Aktif</span>
+          </div>
+        </div>
+
+        <div class="workout-timer-wrap">
+          <div class="timer-ring" id="timer-ring">
+            <svg viewBox="0 0 180 180">
+              <defs>
+                <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00d4ff" />
+                  <stop offset="100%" stop-color="#00e89d" />
+                </linearGradient>
+              </defs>
+              <circle class="ring-bg" cx="90" cy="90" r="80" />
+              <circle class="ring-progress" id="timer-progress" cx="90" cy="90" r="80" />
+            </svg>
+            <div class="ring-inner">
+              <div class="timer-display" id="timer-display">12:45</div>
+              <div class="timer-label">Set Süresi</div>
+            </div>
+          </div>
+
+          <div class="workout-controls">
+            <button class="workout-btn secondary" id="btn-prev" data-tooltip="Önceki">
+              <i data-lucide="skip-back"></i>
+            </button>
+            <button class="workout-btn primary" id="btn-play-pause" data-tooltip="Başlat / Duraklat">
+              <i data-lucide="play"></i>
+            </button>
+            <button class="workout-btn secondary" id="btn-next" data-tooltip="Sonraki">
+              <i data-lucide="skip-forward"></i>
+            </button>
+            <button class="workout-btn secondary" id="btn-reset" data-tooltip="Sıfırla">
+              <i data-lucide="rotate-ccw"></i>
+            </button>
+          </div>
+
+          <div class="exercise-list" id="exercise-list">
+            <div class="exercise-item done" data-exercise="1">
+              <div class="exercise-num">✓</div>
+              <div class="exercise-info">
+                <div class="exercise-name">Bench Press</div>
+                <div class="exercise-meta">4 × 10 rep · 60kg</div>
+              </div>
+              <div class="exercise-sets">4/4</div>
+            </div>
+            <div class="exercise-item active" data-exercise="2">
+              <div class="exercise-num">2</div>
+              <div class="exercise-info">
+                <div class="exercise-name">Dumbbell Row</div>
+                <div class="exercise-meta">3 × 12 rep · 20kg</div>
+              </div>
+              <div class="exercise-sets">2/3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── HAFTALIK AKTİVİTE GRAFİĞİ ── -->
+      <div class="card" id="weekly-chart-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">📊</span> Haftalık Aktivite
+          </div>
+          <div class="daily-plan-tabs" style="margin-bottom:0;">
+            <span class="plan-tab active" data-chart="calories">Kalori</span>
+            <span class="plan-tab" data-chart="steps">Adım</span>
+            <span class="plan-tab" data-chart="workout">Antrenman</span>
+          </div>
+        </div>
+        <div class="chart-container" id="chart-container">
+          <canvas id="weeklyChart"></canvas>
+        </div>
+      </div>
+
+      <!-- ── PROFIL SAYFASI ── -->
+      <div class="card view-hidden" id="profile-card" style="grid-column: 1 / -1;">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">👤</span> Kullanıcı Profili
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+          <div style="text-align: center;">
+            <div style="position: relative; display: inline-block;">
+              <img src="avatar.png" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--neon-blue); object-fit: cover;" />
+              <button style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--grad-blue-green); border: none; color: var(--bg-primary); cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="camera" style="width: 16px; height: 16px;"></i>
+              </button>
+            </div>
+            <h2 id="prof-name-display" style="margin-top: 16px; font-size: 1.5rem;">Yasemin Cebecioğlu</h2>
+            <p style="color: var(--neon-green); font-weight: 600; font-size: 0.9rem;">⚡ Pro Üyelik</p>
+          </div>
+
+          <div style="flex: 1; min-width: 300px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;" id="profile-fields-container">
+            <div class="stat-card" style="padding: 16px; background: rgba(255,255,255,0.03);">
+              <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px;">Boy</div>
+              <div id="prof-height-display" style="font-size: 1.25rem; font-weight: 700;">172 cm</div>
+            </div>
+            <div class="stat-card" style="padding: 16px; background: rgba(255,255,255,0.03);">
+              <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px;">Kilo</div>
+              <div id="prof-weight-display" style="font-size: 1.25rem; font-weight: 700;">64 kg</div>
+            </div>
+            <div class="stat-card" style="padding: 16px; background: rgba(255,255,255,0.03);">
+              <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px;">Yaş</div>
+              <div id="prof-age-display" style="font-size: 1.25rem; font-weight: 700;">26</div>
+            </div>
+            <div class="stat-card" style="padding: 16px; background: rgba(255,255,255,0.03);">
+              <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px;">Hedef</div>
+              <div id="prof-goal-display" style="font-size: 1.25rem; font-weight: 700;">Kas Kazanımı</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--glass-border); display: flex; gap: 16px; justify-content: flex-end;">
+          <button id="btn-edit-profile" style="padding: 10px 24px; border-radius: var(--radius-md); background: var(--grad-blue-green); border: none; color: var(--bg-primary); cursor: pointer; font-weight: 700;">Profili Düzenle</button>
+        </div>
+      </div>
+
+      <!-- ── BOŞ GÖRÜNÜM YER TUTUCU ── -->
+      <div id="empty-view-placeholder" class="view-hidden" style="grid-column: 1 / -1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 100px 20px; text-align:center; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--glass-border);">
+         <div style="font-size: 3rem; margin-bottom: 20px;">🚧</div>
+         <h2 style="font-size: 1.5rem; margin-bottom: 10px;">Çok Yakında!</h2>
+         <p style="color: var(--text-secondary); max-width: 400px;">Bu bölüm şu anda hazırlık aşamasında. Çok yakında yeni özelliklerle burada olacağız.</p>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ===== RIGHT SIDEBAR — GAMIFICATION ===== -->
+  <aside class="sidebar-right" id="sidebarRight">
+    <div class="gamification-header">
+      <span class="icon">🏆</span>
+      <h3>Oyunlaştırma</h3>
+    </div>
+
+    <!-- User Level -->
+    <div class="level-card" id="level-card">
+      <div class="level-badge">14</div>
+      <div class="level-title">Seviye 14 — Titan</div>
+      <div class="level-subtitle">Bir sonraki seviyeye kalan: 280 XP</div>
+      <div class="xp-bar-wrap">
+        <div class="xp-bar" id="xp-bar"></div>
+      </div>
+      <div class="xp-text">2,720 / 3,000 XP</div>
+    </div>
+
+    <!-- Scores -->
+    <div class="score-grid" id="score-grid">
+      <div class="score-item">
+        <div class="score-value blue" id="score-streak">23</div>
+        <div class="score-label">Seri (Gün)</div>
+      </div>
+      <div class="score-item">
+        <div class="score-value green" id="score-total">847</div>
+        <div class="score-label">Toplam Puan</div>
+      </div>
+      <div class="score-item">
+        <div class="score-value violet" id="score-badges">12</div>
+        <div class="score-label">Rozet</div>
+      </div>
+      <div class="score-item">
+        <div class="score-value orange" id="score-rank">#42</div>
+        <div class="score-label">Sıralama</div>
+      </div>
+    </div>
+
+    <!-- Achievements -->
+    <div class="achievements-section">
+      <div class="section-title">Son Başarılar</div>
+      <div class="achievement-item">
+        <div class="achievement-icon gold">🥇</div>
+        <div class="achievement-info">
+          <div class="achievement-name">Tutarlılık Ustası</div>
+          <div class="achievement-desc">21 gün üst üste antrenman</div>
+        </div>
+      </div>
+      <div class="achievement-item">
+        <div class="achievement-icon silver">🥈</div>
+        <div class="achievement-info">
+          <div class="achievement-name">Kalori Avcısı</div>
+          <div class="achievement-desc">Haftalık hedefi %100 tamamla</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coupons -->
+    <div class="coupon-section">
+      <div class="section-title">İndirim Kuponları</div>
+      <div class="coupon-card" id="coupon-1">
+        <div class="coupon-icon">💪</div>
+        <div class="coupon-info">
+          <div class="coupon-title">%20 Supplement İndirimi</div>
+          <div class="coupon-desc">Seviye 14'e ulaştığın için kazandın!</div>
+        </div>
+        <div class="coupon-code">FIT20</div>
+      </div>
+      <div class="coupon-card" id="coupon-2">
+        <div class="coupon-icon">🥗</div>
+        <div class="coupon-info">
+          <div class="coupon-title">Ücretsiz Diyet Planı</div>
+          <div class="coupon-desc">23 günlük seri ödülü</div>
+        </div>
+        <div class="coupon-code">STREAK23</div>
+      </div>
+      <div class="coupon-card" id="coupon-3">
+        <div class="coupon-icon">👟</div>
+        <div class="coupon-info">
+          <div class="coupon-title">%15 Spor Giyim İndirimi</div>
+          <div class="coupon-desc">Kalori Avcısı rozeti kazandığın için!</div>
+        </div>
+        <div class="coupon-code">SPOR15</div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Mini -->
+    <div class="leaderboard-section">
+      <div class="section-title">Lider Tablosu</div>
+      <div class="leaderboard-item">
+        <div class="leaderboard-rank gold">1</div>
+        <div class="leaderboard-avatar">👩‍🦰</div>
+        <div class="leaderboard-name">Elif K.</div>
+        <div class="leaderboard-pts">1,240 pt</div>
+      </div>
+      <div class="leaderboard-item">
+        <div class="leaderboard-rank silver">2</div>
+        <div class="leaderboard-avatar">👨</div>
+        <div class="leaderboard-name">Ahmet T.</div>
+        <div class="leaderboard-pts">1,180 pt</div>
+      </div>
+      <div class="leaderboard-item">
+        <div class="leaderboard-rank bronze">3</div>
+        <div class="leaderboard-avatar">👩</div>
+        <div class="leaderboard-name">Zeynep A.</div>
+        <div class="leaderboard-pts">1,095 pt</div>
+      </div>
+      <div class="leaderboard-item">
+        <div class="leaderboard-rank normal">4</div>
+        <div class="leaderboard-avatar">🧑</div>
+        <div class="leaderboard-name you">Sen ⭐</div>
+        <div class="leaderboard-pts">847 pt</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
